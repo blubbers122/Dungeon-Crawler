@@ -22,13 +22,24 @@ for key, value in dcc.armorBank.items():  # initializes armor
     armor.addToInventory()
 '''
 
-# TODO: define classes for all possible gameObjects (Person, Room, Item, Menu)
+defaultInventory = {
+    "gold coin": 50,
+}
 
-# TODO: define console box width, (and height?)
+classes = ["Warrior", "Ranger", "Rogue", "Deprived (No starting gear)"]
+
+presetChars = [dcc.Warrior("Warrior", 7, 5, defaultInventory), dcc.Ranger("Ranger", 6, 7, defaultInventory), dcc.Rogue("Rogue", 5, 9, defaultInventory), dcc.Player("Deprived", 3, 3, {})]
+
+enemies = []
+
+eventBank = ["enemy spotted", "enemy sneaks up on you", "you trip on something",
+             "loose rock blocks path", "loose rock hits you", "you wake up sleeping enemy",
+             "stumble open hidden item/chest", "item was cursed", "trapped chest",
+             "enemy poisons you", "something shiny sticking out of rubble", "branching path",
+             "hear a noise", "smell something"]
 
 # TODO: check for save file in directory with valid save data
 
-    # TODO: if empty, display New Game title screen
 def newGameScreen():
     consoleWidth = 115
     difficulty = "medium"
@@ -48,7 +59,10 @@ def newGameScreen():
             newSettings = displayOptions(consoleWidth, difficulty)
             consoleWidth = newSettings[0]
             difficulty = newSettings[1]
-    createChar(consoleWidth)
+    if pyip.inputYesNo("Create your own character? ") == "yes":
+        createChar(consoleWidth)
+    else:
+        chooseChar(consoleWidth)
 
 
 def displayOptions(consoleWidth, difficulty):
@@ -65,11 +79,22 @@ def displayOptions(consoleWidth, difficulty):
             print("difficulty was updated to " + difficulty)
         elif choice == "c":
             print(controlsDisplay)
-            print("i: display inventory\nc: display in-game commands\ns: see character status\ne: end current turn\nq: exit game")
+            print("i: display inventory\nc: display in-game commands\ns: see character status\ne: end current turn\nq: quit game")
             time.sleep(2)
         else:
             break
     return consoleWidth, difficulty
+
+
+def chooseChar(consoleWidth):
+    while True:
+        print("Choose your Character".center(consoleWidth, "-"))
+        for index, classname in enumerate(classes):
+            print("%s: %s" % (index + 1, classname))
+        choice = pyip.inputInt(">", min=1, max=4)
+        player = presetChars[choice - 1]
+        dungeon(consoleWidth, player)
+
 
 
 def createChar(consoleWidth):
@@ -77,38 +102,154 @@ def createChar(consoleWidth):
     while True:
         print("Create your Character".center(consoleWidth, "-"))
         name = pyip.inputStr(">What is your name? ")
+        for count, classname in enumerate(classes):
+            print("%s: %s" % (count + 1, classname))
+        playerClass = pyip.inputInt(">Choose your class ", min=1, max=len(classes))
+        if playerClass == 4:
+            maxPoints /= 2
         for line in textwrap.wrap("You have up to %s skill points to spend however you like on your starting health, strength and speed." % maxPoints, width=consoleWidth):
             print(line.center(consoleWidth))
         print()
-        health = pyip.inputInt(">Enter health: ", min=1, max=maxPoints - 2)
-        print(("Points remaining: " + str(maxPoints - health)).center(consoleWidth))
-        strength = pyip.inputInt(">Enter strength: ", min=1, max=maxPoints - 1 - health)
-        print(("Points remaining: " + str(maxPoints - health - strength)).center(consoleWidth))
-        speed = pyip.inputInt(">Enter speed: ", min=1, max=maxPoints - health - strength)
-        print(("Points remaining: " + str(maxPoints - health - strength - speed)).center(consoleWidth))
+        #health = pyip.inputInt(">Enter health: ", min=1, max=maxPoints - 2)
+        #print(("Points remaining: " + str(maxPoints - health)).center(consoleWidth))
+        strength = pyip.inputInt(">Enter strength: ", min=1, max=maxPoints - 1)
+        print(("Points remaining: " + str(maxPoints - strength)).center(consoleWidth))
+        speed = pyip.inputInt(">Enter speed: ", min=1, max=maxPoints - strength)
+        print(("Points remaining: " + str(maxPoints - strength - speed)).center(consoleWidth))
         time.sleep(.5)
-        confirm = pyip.inputYesNo("%s will have %s health, %s strength and %s speed.\n>Is this okay? "
-                                  % (name, health, strength, speed))
-        print(speed)
+        confirm = pyip.inputYesNo("%s will have %s strength and %s speed.\n>Is this okay? "
+                                  % (name, strength, speed))
         if confirm == "yes":
-            player = dcc.Player(name, health, strength, 0, speed)
-            print("Entering the dungeon", end="")
-            for x in range(3):
-                print(".", end="")
-                time.sleep(.5)
-            print()
+            if playerClass == 1:
+                player = dcc.Warrior(name, strength, speed, defaultInventory)
+            elif playerClass == 2:
+                player = dcc.Ranger(name, strength, speed, defaultInventory)
+            elif playerClass == 3:
+                player = dcc.Rogue(name, strength, speed, defaultInventory)
+            else:
+                player = dcc.Player(name, strength, speed, {})
             break
     dungeon(consoleWidth, player)
-
-
-
 
     # TODO: if data can be read from save file, display Continue title screen
 
 # TODO: character selection menu
 
 # TODO: enter dungeon and generate
+
+def i(consoleWidth, player):
+    print("Inventory".center(consoleWidth, "-"))
+    print("enter the name of the item to inspect or press b to go back:".center(consoleWidth))
+    player.displayInventory()
+    print("-" * consoleWidth)
+
+def c(consoleWidth, player):
+    print("In-Game Controls".center(consoleWidth, "-"))
+    print(
+        "i: display inventory\nc: display in-game commands\ns: see character status\ne: end current turn\nq: save and quit")
+    print("-" * consoleWidth)
+
+def s(consoleWidth, player):
+    print(player.name.center(consoleWidth, "-"))
+    player.status()
+    print("Equipment".center(consoleWidth, "-"))
+    player.equipment()
+    print("-" * consoleWidth)
+
+# TODO: a few numbers inputs to choose options when encountering a random event
+
+# TODO: r for running away from enemies (success based on speed)
+def r(consoleWidth, player):
+    pass
+
+# TODO: f for engage in fight after spotting enemy
+def f(consoleWidth, player):
+    # enemySpotted and enemyExists
+    if enemies != []:
+        print("You approach enemy " + enemies[0].name)
+        combat(consoleWidth, player, enemies[0])
+    else:
+        print("you cannot fight now.")
+
+def q(consoleWidth, player):
+    if pyip.inputYesNo(">Would you like to save and quit game? ") == "yes":
+        exit()
+
+# TODO: l for look around that describes current room closely but uses turn and makes you vulnerable
+def l(consoleWidth, player):
+    pass
+
+moveSet = {
+    "i": i,
+    "c": c,
+    "s": s,
+    "r": r,
+    "f": f,
+    "q": q,
+    "l": l
+}
+
+
+# TODO: display combat menu if you press 'm?' on turn to heal and use special items
+# TODO: make it harder to run away if you are slower
+def combat(consoleWidth, player, enemy):
+    print("FIGHT".center(consoleWidth, "#"))
+    if player.speed > enemy.speed:
+        count = 0
+    else:
+        count = 1
+    while True:
+        if count % 2 == 0:
+            print("%s: %s hp\n%s: %s hp" % (enemy.name, enemy.health, player.name, player.health))
+            print("press 'f' to attack or 'r' to run.")
+            move = pyip.inputMenu(["f", "r"], prompt=">")
+            if move == "f":
+                rawDamage = player.strength * player.damageMult - enemy.defense + random.randint(-2, 2)
+                if rawDamage <= 0:
+                    rawDamage = 1
+                enemy.health -= rawDamage
+                print("%s hits %s with %s and deals %s damage!\n" % (player.name, enemy.name, player.weapon, rawDamage))
+                time.sleep(1)
+                if enemy.health <= 0:
+                    print(enemy.name + " was defeated!\n")
+                    # TODO: add looting here
+                    if pyip.inputYesNo(">loot %s? " % enemy.name) == "yes":
+                        print(enemy.name.center(consoleWidth, "-"))
+                        enemy.displayInventory()
+                        print("-" * consoleWidth)
+                    break
+            else:
+                print("you run away")
+                break
+        else:
+            rawDamage = enemy.strength - player.defense + random.randint(-2, 2)
+            if rawDamage <= 0:
+                rawDamage = 1
+            player.health -= rawDamage
+            print("%s strikes you and deals %s damage!\n" % (enemy.name, rawDamage))
+            time.sleep(1)
+            if player.health <= 0:
+                print("You died!")
+                exit()
+        count += 1
+    del enemies[0]
+    player.hunger -= count
+    print("#" * consoleWidth)
+
+# TODO: decide if spawn enemy, if they spot you or you spot them
+def turnGenerator():
+    roll = random.randint(0, len(eventBank) - 1)
+    return eventBank[roll]
+
+
+# TODO: add special event related functions to call if you roll for them in turnGenerator
+
 def dungeon(consoleWidth, player):
+    print(player.name + " enters the dungeon", end="")
+    for x in range(3):
+        print(".", end="")
+        time.sleep(.5)
+    print()
     print("****To display in game commands press 'c'****".center(consoleWidth))
     time.sleep(1)
     print("IN THE DUNGEON".center(consoleWidth, "="))
@@ -118,43 +259,28 @@ def dungeon(consoleWidth, player):
         print(line.center(consoleWidth))
     while playing:
         print(("Turn %s" % turn).center(consoleWidth, "~"))
+        event = turnGenerator()
+        print(event)
+        if turn == 2:
+            enemies.append(dcc.Bat())  # temporary to test combat
+        if enemies != [] and random.randint(1, 5) == 5:
+            print(enemies[0].name + " approaches")
+            combat(consoleWidth, player, enemies[0])
         while True:  # loops until turn ends
-            nextMove = pyip.inputStr(">")
-            if nextMove == "i":  # display inventory
-                print("Inventory".center(consoleWidth, "-"))
-                print("enter the id of the item to inspect or press 0 to go back:".center(consoleWidth))
-                player.displayInventory()
-                print("-" * consoleWidth)
-            elif nextMove == "c":  # display commands
-                showCommands(consoleWidth)
-            elif nextMove == "s":  # display character status
-                print(player.name.center(consoleWidth, "-"))
-                player.status()
-                print("Equipment".center(consoleWidth, "-"))
-                player.equipment()
-                print("-" * consoleWidth)
-            elif nextMove == "e":  #end current turn
+            nextMove = pyip.inputMenu(["c", "i", "e", "q", "s", "f", "l", "r"], ">")
+            if nextMove == "e":
                 break
-            elif nextMove == "q":
-                if pyip.inputYesNo(">Would you like to save and quit game? ") == "yes":
-                    exit()
+            moveSet[nextMove](consoleWidth, player)  # calls function associated with command
         player.hunger -= 1
-        print(player.hunger)
         turn += 1
 
-
-def showCommands(consoleWidth):
-    print("In-Game Controls".center(consoleWidth, "-"))
-    print("i: display inventory\nc: display in-game commands\ns: see character status\ne: end current turn\nq: save and quit")
-    print("-" * consoleWidth)
     # TODO: check for spawning enemy
 
 # TODO: combat
 
-# TODO: looting
+# TODO: generate rooms and enemies and loot containers
 
-# TODO: inventory menu
-    # TODO: inspect items
+# TODO: looting
 
 # TODO: levels in dungeon
 
