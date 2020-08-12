@@ -1,9 +1,14 @@
-class Combat:
-    def __init__():
-        pass
+from ..display import printCentered, printLine
+from random import randint
+from time import sleep
+import pyinputplus as pyip
 
-    def start(consoleWidth, player, enemy):
-        print("FIGHT".center(consoleWidth, "#"))
+class Combat:
+    def __init__(self, player, enemy):
+        self.start(player, enemy)
+
+    def start(self, player, enemy):
+        printCentered("FIGHT", "#")
         if player.speed > enemy.speed:
             count = 0
         else:
@@ -14,34 +19,34 @@ class Combat:
                 print("press 'f' to attack or 'r' to run.")
                 move = pyip.inputMenu(["f", "r"], prompt=">")
                 if move == "f":
-                    rawDamage = player.strength * player.damageMult - enemy.defense + random.randint(-2, 2)
+                    rawDamage = player.strength * player.damageMult - enemy.defense + randint(-2, 2)
                     if rawDamage <= 0:
                         rawDamage = 1
                     enemy.health -= rawDamage
                     print("%s hits %s with %s and deals %s damage!\n" % (player.name, enemy.name, player.weapon, rawDamage))
-                    time.sleep(1)
+                    sleep(1)
                     if enemy.health <= 0:
                         print(enemy.name + " was defeated!\n")
                         # TODO: add looting here
                         if pyip.inputYesNo(">loot %s? " % enemy.name) == "yes":
-                            print(enemy.name.center(consoleWidth, "-"))
+                            printCentered(enemy.name, "-")
                             enemy.displayInventory()
-                            print("-" * consoleWidth)
+                            printLine("-")
                         break
                 else:
                     print("you run away")
                     break
             else:
-                rawDamage = enemy.strength - player.defense + random.randint(-2, 2)
+                rawDamage = enemy.strength - player.defense + randint(-2, 2)
                 if rawDamage <= 0:
                     rawDamage = 1
                 player.health -= rawDamage
                 print("%s strikes you and deals %s damage!\n" % (enemy.name, rawDamage))
-                time.sleep(1)
+                sleep(1)
                 if player.health <= 0:
                     print("You died!")
                     exit()
             count += 1
         del enemies[0]
         player.hunger -= count
-        print("#" * consoleWidth)
+        printLine("#")

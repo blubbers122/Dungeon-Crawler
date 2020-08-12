@@ -2,8 +2,9 @@ from ..battle_entity import Entity
 from .controls import *
 
 class Player(Entity):
-    def __init__(self, name, strength, speed):
-        super().__init__(name, strength, speed)
+    def __init__(self, strength, speed, name):
+        super().__init__(strength, speed)
+        self.name = name
 
     inventory = {"gold coin": 50}
     weapon = ""

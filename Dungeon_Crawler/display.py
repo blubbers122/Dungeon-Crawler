@@ -2,15 +2,32 @@ import sys
 sys.path.append("C:/Users/Brock/Documents/GitHub/Dungeon-Crawler/Dungeon_Crawler")
 import settings
 from textwrap import wrap
+from time import sleep
 
 def printLine(char):
     print(char * settings.consoleWidth)
 
-def printCentered(text, spacer):
+def printCentered(text, spacer=" "):
     print(text.center(settings.consoleWidth, spacer))
 
-def printMenu(border, top, bottom, content):
-    pass
+def printMenu(content, border="-", topText=None, bottom=False ):
+
+    if topText:
+        printCentered(topText, border)
+    else:
+        printLine(border)
+    for line in content:
+        print(line)
+
+    if bottom:
+        printLine(border)
+
+
+def printMultiple(lines, pause=None):
+    for line in lines:
+        print(line)
+        if pause:
+            sleep(pause)
 
 def printWrapped(text):
     for line in wrap(text, width=settings.consoleWidth):

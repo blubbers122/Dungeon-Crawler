@@ -6,9 +6,7 @@ from .events import eventBank
 from .settings import difficulty
 from .enemies.classes import Bat
 from .display import *
-
-enemies = []
-
+from.combat import Combat
 
 # TODO: display combat menu if you press 'm?' on turn to heal and use special items
 # TODO: make it harder to run away if you are slower
@@ -26,13 +24,14 @@ def gamePlayLoop(player):
     turn = 1
     while playing:
         printCentered("Turn %s" % turn, "~")
-        event = turnGenerator()
-        print(event)
+        eventRoll = randint(0, 100)
+        if eventRoll > 80:
+            event = turnGenerator()
+            print(event)
         if turn == 2:
-            enemies.append(Bat())  # temporary to test combat
-        if enemies != [] and randint(1, 5) == 5:
-            print(enemies[0].name + " approaches")
-            combat(player, enemies[0])
+            enemy = Bat()  # temporary to test combat
+            print(enemy.name + " approaches")
+            Combat(player, enemy)
         while True:
             nextMove = pyip.inputMenu(["c", "i", "e", "q", "s", "f", "l", "r"], ">")
             if nextMove == "e":
@@ -44,7 +43,7 @@ def gamePlayLoop(player):
 
 
 def enterDungeon(player):
-    print(player.name + " enters the dungeon", end="")
+    print(str(player.name) + " enters the dungeon", end="")
     for x in range(3):
         print(".", end="")
         time.sleep(.5)
@@ -53,7 +52,7 @@ def enterDungeon(player):
     time.sleep(1)
     printCentered("IN THE DUNGEON", "=")
 
-    printWrapped(player.name + " enters the dark cave hidden in the side of a great mountain, after hearing of a great treasure located deep inside. Despite the infamy of the dungeon, " + player.name + " trudges into the darkness.")
+    printWrapped("%s enters the dark cave hidden in the side of a great mountain, after hearing of a great treasure located deep inside. Despite the infamy of the dungeon, %s trudges into the darkness." % (player.name, player.name))
     gamePlayLoop(player)
 
 
