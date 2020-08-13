@@ -1,23 +1,38 @@
-
+from ..display import printMenu, printCentered, printLine
+import pyinputplus as pyip
 
 def showPlayerInventory(player):
-    print("Inventory".center(consoleWidth, "-"))
-    print("enter the name of the item to inspect or press b to go back:".center(consoleWidth))
-    player.displayInventory()
-    print("-" * consoleWidth)
+    validChoices = [str(x) for x in range(1, len(player.inventory) + 1)]
+    validChoices.append("b")
+    inventory = player.inventoryStrings()
+
+    while True:
+        printMenu(inventory, topText="Inventory")
+        printCentered("*enter the number to inspect or press 'b' to return*")
+        choice = pyip.inputChoice(validChoices, prompt=">")
+        if choice == "b":
+            printLine("-")
+            break
+        item = player.inventory[int(choice) - 1]
+        printMenu(item.itemStrings(), topText=item.name)
+        if item.equippable:
+            printCentered("*press 'e' to equip or 'b' to return*")
+            choice = pyip.inputChoice(["e", "b"], prompt=">")
+            if choice == "e":
+                player.equipItem(item)
+        else:
+            printCentered("*press 'b' to return*")
+            choice = pyip.inputChoice(["e", "b"], prompt=">")
+
 
 def showControls(player):
-    print("In-Game Controls".center(consoleWidth, "-"))
-    print(
-        "i: display inventory\nc: display in-game commands\ns: see character status\ne: end current turn\nq: save and quit")
-    print("-" * consoleWidth)
+    printMenu(["i: display inventory", "c: display in-game commands", "s: see character status", "e: end current turn", "q: save and quit"],
+        topText="In-Game Controls",
+        bottom=True)
 
 def showPlayerStatus(player):
-    print(player.name.center(consoleWidth, "-"))
-    player.status()
-    print("Equipment".center(consoleWidth, "-"))
-    player.equipment()
-    print("-" * consoleWidth)
+    printMenu(player.status(), topText=player.name)
+    printMenu(player.equipment(), topText="Equipped", bottom=True)
 
 # TODO: a few numbers inputs to choose options when encountering a random event
 
@@ -28,15 +43,14 @@ def runAway(player):
 # TODO: f for engage in fight after spotting enemy
 def fight(player):
     # enemySpotted and enemyExists
-    if enemies != []:
-        print("You approach enemy " + enemies[0].name)
-        combat(consoleWidth, player, enemies[0])
-    else:
-        print("you cannot fight now.")
+    print("You approach enemy " + enemies[0].name)
+    combat(player, enemies[0])
 
 def quitGame(player):
     if pyip.inputYesNo(">Would you like to save and quit game? ") == "yes":
         exit()
+    else:
+        printLine("-")
 
 # TODO: l for look around that describes current room closely but uses turn and makes you vulnerable
 def lookAround(consoleWidth, player):

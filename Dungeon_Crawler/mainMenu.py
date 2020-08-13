@@ -24,7 +24,7 @@ def newGameScreen():
             break
         else:
             difficulty = displayOptions(difficulty)
-    if pyip.inputYesNo(">Create your own character? ") == "yes":
+    if pyip.inputYesNo(">Create custom character? ") == "yes":
         createChar()
     else:
         chooseChar()

@@ -18,6 +18,8 @@ weaponBank = {
 }
 
 class Weapon(Item):
-    def __init__(self, name, value, description, damageMult):
-        super().__init__(name, value, description)
-        self.damageMult = damageMult
+    def __init__(self, name, value, amount, description):
+        super().__init__(name, value, amount, description)
+        self.damageMult = weaponBank[name]["damageMult"]
+
+    equippable = True

@@ -1,4 +1,7 @@
 from ..items import Item
 
 class Consumable(Item):
-    pass
+    def __init__(self, name, value, amount, description):
+        super().__init__(name, value, amount, description)
+
+    equippable = False

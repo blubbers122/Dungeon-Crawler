@@ -27,10 +27,11 @@ class Combat:
                     sleep(1)
                     if enemy.health <= 0:
                         print(enemy.name + " was defeated!\n")
+                        printLine("#")
                         # TODO: add looting here
                         if pyip.inputYesNo(">loot %s? " % enemy.name) == "yes":
                             printCentered(enemy.name, "-")
-                            enemy.displayInventory()
+                            print(enemy.inventory)
                             printLine("-")
                         break
                 else:
@@ -47,6 +48,4 @@ class Combat:
                     print("You died!")
                     exit()
             count += 1
-        del enemies[0]
         player.hunger -= count
-        printLine("#")

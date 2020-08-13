@@ -15,6 +15,8 @@ armorBank = {
 }
 
 class Armor(Item):
-    def __init__(self, name, value, description, resistance):
-        super().__init__(name, value, description)
-        self.resistance = resistance
+    def __init__(self, name, value, amount, description):
+        super().__init__(name, value, amount, description)
+        self.resistance = armorBank[name]["resistance"]
+
+    equippable = True

@@ -1,3 +1,4 @@
+# any game object that can act in battle
 class Entity:
     def __init__(self, strength, speed):
         self.strength = strength
@@ -8,5 +9,3 @@ class Entity:
 
     def defend(self):
         pass
-
-    
