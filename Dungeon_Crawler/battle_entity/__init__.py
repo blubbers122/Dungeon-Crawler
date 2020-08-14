@@ -1,6 +1,6 @@
 from random import randint
 
-# any game object that can act in battle
+# any game object that has an inventory an may act in battle
 class Entity:
 
     #add attack type later
@@ -12,6 +12,7 @@ class Entity:
 
         return rawDamage
 
+        # returns lines to be shown to display the entity's inventory
     def inventoryStrings(self):
         if self.inventory:
             strings = ["%s: %s %s" % (index + 1, item.amount, item.name) for index, item in enumerate(self.inventory)]

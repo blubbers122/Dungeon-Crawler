@@ -9,3 +9,7 @@ class Item:
 
     def itemStrings(self):
         return [self.description, "Value: %s" % self.value, "Quantity: %s" % self.amount]
+
+    def __repr__(self):
+        itemString = "%s %s(s) " % (self.amount, self.name)
+        return itemString

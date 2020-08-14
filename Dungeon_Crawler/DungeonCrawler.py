@@ -6,7 +6,8 @@ from .events import eventBank
 from .settings import difficulty
 from .enemies.classes import Bat
 from .display import *
-from.combat import Combat
+from .combat import Combat
+from .rooms import Room
 
 # TODO: display combat menu if you press 'm?' on turn to heal and use special items
 # TODO: make it harder to run away if you are slower
@@ -24,8 +25,27 @@ def gamePlayLoop(player):
     turn = 1
     print()
     printCentered("****To display in game commands press 'c'****")
+
+    # builds the starting room
+    room = Room()
+    room.current = True
+    room.generateContainers()
+    print(room.containers)
+
     while playing:
         printCentered("Turn %s" % turn, "~")
+        for container in room.containers:
+            #TODO: optimize to factor in player and container location too
+            foundChest = player.perception + randint(-2, 2) + container.visibility >= 10
+
+            if foundChest:
+                print(container.discoveryMessage)
+                print("loot?")
+                if pyip.inputYesNo(">") == "yes":
+                    player.loot(container)
+                    room.containers.remove(container)
+                break
+
         eventRoll = randint(0, 100)
         if eventRoll > 80:
             event = turnGenerator()
@@ -38,7 +58,7 @@ def gamePlayLoop(player):
             nextMove = pyip.inputMenu(["c", "i", "e", "q", "s", "f", "l", "r"], ">")
             if nextMove == "e":
                 break
-            player.moveSet[nextMove](player)  # calls function associated with command
+            player.moveSet[nextMove](player)  # calls control function associated with command
 
         player.hunger -= 1
         turn += 1
@@ -55,13 +75,5 @@ def enterDungeon(player):
     printCentered("IN THE DUNGEON", "=")
     printWrapped("%s enters the dark cave hidden in the side of a great mountain, after hearing of a great treasure located deep inside. Despite the infamy of the dungeon, %s trudges into the darkness." % (player.name, player.name))
     gamePlayLoop(player)
-
-    # TODO: check for spawning enemy
-
-# TODO: combat
-
-# TODO: generate rooms and enemies and loot containers
-
-# TODO: looting
 
 # TODO: levels in dungeon

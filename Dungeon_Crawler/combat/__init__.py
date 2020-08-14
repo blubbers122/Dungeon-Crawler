@@ -29,7 +29,8 @@ class Combat:
                         # TODO: add looting here
                         print("loot %s? " % enemy.name)
                         if pyip.inputYesNo(">") == "yes":
-                            self.lootEnemy(player, enemy)
+                            player.loot(enemy)
+                        del enemy
 
                         printLine("-")
                         break
@@ -47,20 +48,3 @@ class Combat:
                     exit()
             count += 1
         player.hunger -= count
-
-    def lootEnemy(self, player, enemy):
-        while True:
-            inventoryMenu = enemy.inventoryStrings()
-            validChoices = [str(x) for x in range(1, len(enemy.inventory) + 1)]
-            validChoices.append("b")
-            printMenu(inventoryMenu, topText=enemy.name)
-            if len(validChoices) == 1:
-                break
-            printCentered("*enter the number to take item or press 'b' to return*")
-            choice = pyip.inputChoice(validChoices, prompt=">")
-            if choice == "b":
-                break
-
-            item = enemy.inventory[int(choice) - 1]
-            player.addToInventory(item)
-            enemy.inventory.remove(item)

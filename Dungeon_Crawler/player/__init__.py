@@ -1,6 +1,8 @@
 from ..battle_entity import Entity
 from .controls import *
 from ..items import treasure, weapons, armor
+from ..display import *
+from pyinputplus import inputChoice
 
 class Player(Entity):
     def __init__(self, strength, speed, name):
@@ -12,6 +14,7 @@ class Player(Entity):
         self.damageMult = 0
         self.health = 100
         self.hunger = 100
+        self.perception = 5
         self.equipped = {
             "weapon": None,
             "armor": None
@@ -67,6 +70,23 @@ class Player(Entity):
         else:
             self.inventory.remove(item)
 
+    def loot(self, container):
+        while True:
+            inventoryMenu = container.inventoryStrings()
+            validChoices = [str(x) for x in range(1, len(container.inventory) + 1)]
+            validChoices.append("b")
+
+            printMenu(inventoryMenu, topText=container.name)
+            if len(validChoices) == 1:
+                break
+            printCentered("*enter the number to take item or press 'b' to return*")
+            choice = inputChoice(validChoices, prompt=">")
+            if choice == "b":
+                break
+
+            item = container.inventory[int(choice) - 1]
+            self.addToInventory(item)
+            container.inventory.remove(item)
 
     def equipment(self):
         weapon = self.equipped["weapon"]
