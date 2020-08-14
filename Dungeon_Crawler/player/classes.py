@@ -1,56 +1,39 @@
 from ..player import Player
+from ..items import weapons, armor
 
 class Warrior(Player):
     def __init__(self, strength, speed, name):
         super().__init__(strength, speed, name)
-        self.defense = 3
+        self.equip(weapons.Weapon("iron sword", 1))
+        self.equip(armor.Armor("chainmail armor", 1))
 
-    damageMult = 1.5
     className = "Warrior"
-
-    weapon = "iron sword"
-    armor = "chainmail armor"
 
 class Ranger(Player):
     def __init__(self, strength, speed, name):
         super().__init__(strength, speed, name)
-        self.defense = 2
+        self.equip(weapons.Weapon("short bow", 1))
+        self.equip(armor.Armor("leather armor", 1))
 
-    damageMult = 1.8
     className = "ranger"
-
-    weapon = "short bow"
-    armor = "leather armor"
 
 # give much better luck than the others
 class Rogue(Player):
     def __init__(self, strength, speed, name):
         super().__init__(strength, speed, name)
-        self.defense = 1
+        self.equip(weapons.Weapon("iron dagger", 1))
+        self.equip(armor.Armor("dark cloak", 1))
 
-    damageMult = 1.2
     className = "Rogue"
-
-    weapon = "iron dagger"
-    armor = "dark cloak"
 
 class Deprived(Player):
     def __init__(self, strength, speed, name):
         super().__init__(strength, speed, name)
-        self.defense = 0
 
-    damageMult = 1
     className = "Deprived"
-
-    weapon = ""
-    armor = ""
 
 class Mage(Player):
     def __init__(self, strength, speed, name):
         super().__init__(strength, speed, name)
-        self.defense = 0
-        
-    className = "Mage"
 
-    weapon = ""
-    armor = ""
+    className = "Mage"

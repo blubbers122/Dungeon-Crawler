@@ -4,9 +4,9 @@ import pyinputplus as pyip
 def showPlayerInventory(player):
     validChoices = [str(x) for x in range(1, len(player.inventory) + 1)]
     validChoices.append("b")
-    inventory = player.inventoryStrings()
 
     while True:
+        inventory = player.inventoryStrings()
         printMenu(inventory, topText="Inventory")
         printCentered("*enter the number to inspect or press 'b' to return*")
         choice = pyip.inputChoice(validChoices, prompt=">")
@@ -19,7 +19,7 @@ def showPlayerInventory(player):
             printCentered("*press 'e' to equip or 'b' to return*")
             choice = pyip.inputChoice(["e", "b"], prompt=">")
             if choice == "e":
-                player.equipItem(item)
+                player.equip(item)
         else:
             printCentered("*press 'b' to return*")
             choice = pyip.inputChoice(["e", "b"], prompt=">")

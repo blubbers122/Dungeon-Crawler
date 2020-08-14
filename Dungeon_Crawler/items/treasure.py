@@ -3,12 +3,20 @@ from ..items import Item
 treasureBank = {
     "gold coin": {"value": 1,
              "description": "A shiny golden coin!"},
-    "ruby": {"value": 50,
-             "description": "A red, reflective precioius gem. I should sell this!"}
+    "ruby": {"value": 100,
+             "description": "A red, reflective precioius gem. I should sell this!"},
+    "sapphire": {"value": 200,
+            "description": "Blue, bright, and brilliant."},
+    "emerald": {"value": 300,
+            "description": "As green as grass, yet much harder to cut."},
+    "diamond": {"value": 500,
+            "description": "Wow, nice find!"}
 }
 
 class Treasure(Item):
-    def __init__(self, name, value, amount, description):
-        super().__init__(name, value, amount, description)
+    def __init__(self, name, amount):
+        super().__init__(name, amount)
+        self.description = treasureBank[name]["description"]
+        self.value = treasureBank[name]["value"]
 
     equippable = False

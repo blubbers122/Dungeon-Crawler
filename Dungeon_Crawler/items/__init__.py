@@ -1,9 +1,7 @@
 
 class Item:
-    def __init__(self, name, value, amount, description):
+    def __init__(self, name, amount):
         self.name = name
-        self.value = value
-        self.description = description
         self.amount = amount
 
     def addToInventory(self):

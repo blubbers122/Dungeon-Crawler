@@ -34,7 +34,11 @@ def displayOptions(difficulty):
     while True:
         printMenu(["s: change console size", "d: change difficulty", "c: view game hotkeys", "b: return to menu"],
             topText="Options")
-        choice = pyip.inputMenu(["s", "d", "c", "b"], prompt=">")
+        choice = pyip.inputMenu(["s", "d", "c", "b", "o"], prompt=">")
+
+        #quick start dev
+        if choice == "o":
+            enterDungeon(Warrior(7, 5, "Warrior"))
         if choice == "s":
             settings.consoleWidth = 187 - settings.consoleWidth
             print("console size updated.")
