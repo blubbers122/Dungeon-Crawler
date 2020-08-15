@@ -14,11 +14,15 @@ consumableBank = {
     }
 }
 
+
 class Consumable(Item):
-    def __init__(self, name, value, amount, description):
-        super().__init__(name, value, amount, description)
-        self.effects = consumableBank[name]["effects"]
-        self.value = consumableBank[name]["value"]
-        self.description = consumableBank[name]["description"]
+    def __init__(self, name=None, amount=None):
+        super().__init__(name, amount)
+        self.effects = consumableBank[self.name]["effects"]
+        self.value = consumableBank[self.name]["value"]
+        self.description = consumableBank[self.name]["description"]
+
+    types = list(consumableBank.keys())
+
 
     equippable = False

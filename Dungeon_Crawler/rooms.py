@@ -12,12 +12,20 @@ class Room:
         self.neighbors = []
         self.containerCount = randint(1, 5)
         self.containers = []
+        self.enemyCount = randint(1, 4)
+        self.enemies = []
         self.current = False
 
     def generateContainers(self):
         for i in range(self.containerCount):
             container = Container()
             self.containers.append(container)
+
+    def generateEnemies(self):
+        for i in range(self.enemyCount):
+            #TODO: randomize enemy type to an extent
+            enemy = Bat()
+            self.enemies.append(enemy)
 
     def generateNeighbors(self):
         for i in range(self.neighborCount):

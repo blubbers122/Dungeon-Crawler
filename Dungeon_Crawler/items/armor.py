@@ -1,8 +1,8 @@
 from ..items import Item
 
 armorBank = {
-    "none": {"value": 0,
-             "resistance": 0},
+    # "none": {"value": 0,
+    #          "resistance": 0},
     "leather armor": {"value": 26,
                       "resistance": 2,
                       "description": "A worn set of leather."},
@@ -15,10 +15,13 @@ armorBank = {
 }
 
 class Armor(Item):
-    def __init__(self, name, amount):
+    def __init__(self, name=None, amount=None):
         super().__init__(name, amount)
-        self.value = armorBank[name]["value"]
-        self.description = armorBank[name]["description"]
-        self.resistance = armorBank[name]["resistance"]
+        self.value = armorBank[self.name]["value"]
+        self.description = armorBank[self.name]["description"]
+        self.resistance = armorBank[self.name]["resistance"]
+
+    types = list(armorBank.keys())
+
 
     equippable = True

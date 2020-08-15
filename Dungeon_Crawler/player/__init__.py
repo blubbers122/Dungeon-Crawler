@@ -11,7 +11,7 @@ class Player(Entity):
         self.name = name
         self.inventory = [treasure.Treasure("gold coin", 50), weapons.Weapon("metal lance", 1), armor.Armor("leather armor", 1)]
         self.defense = 0
-        self.damageMult = 0
+        self.damageMult = 1
         self.health = 100
         self.hunger = 100
         self.perception = 5

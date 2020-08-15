@@ -1,8 +1,8 @@
 from ..items import Item
 
 weaponBank = {
-    "fists": {"value": 0,
-              "damageMult": 1},
+    # "fists": {"value": 0,
+    #           "damageMult": 1},
     "iron sword": {"value": 16,
                    "damageMult": 1.5,
                    "description": "An iron longsword, with a slightly rusted blade."},
@@ -18,10 +18,12 @@ weaponBank = {
 }
 
 class Weapon(Item):
-    def __init__(self, name, amount):
+    def __init__(self, name=None, amount=None):
         super().__init__(name, amount)
-        self.value = weaponBank[name]["value"]
-        self.description = weaponBank[name]["description"]
-        self.damageMult = weaponBank[name]["damageMult"]
+        self.value = weaponBank[self.name]["value"]
+        self.description = weaponBank[self.name]["description"]
+        self.damageMult = weaponBank[self.name]["damageMult"]
+
+    types = list(weaponBank.keys())
 
     equippable = True

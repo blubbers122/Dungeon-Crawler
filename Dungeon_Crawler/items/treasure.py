@@ -14,9 +14,11 @@ treasureBank = {
 }
 
 class Treasure(Item):
-    def __init__(self, name, amount):
+    def __init__(self, name=None, amount=None):
         super().__init__(name, amount)
-        self.description = treasureBank[name]["description"]
-        self.value = treasureBank[name]["value"]
+        self.description = treasureBank[self.name]["description"]
+        self.value = treasureBank[self.name]["value"]
+
+    types = list(treasureBank.keys())
 
     equippable = False
