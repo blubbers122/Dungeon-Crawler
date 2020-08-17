@@ -14,7 +14,8 @@ class Player(Entity):
         self.damageMult = 1
         self.health = 100
         self.hunger = 100
-        self.perception = 5
+        self.roomLocation = 0
+        self.perception = 5 # higher means player can see further and better up close
         self.equipped = {
             "weapon": None,
             "armor": None
@@ -63,8 +64,22 @@ class Player(Entity):
         pass
 
     def consumeItem(self, item):
-        for effect in item.effects:
-            print(effect)
+        # dict of item effect functions?
+        for effect, strength in item.effects.items():
+            if effect == "health restore":
+                if self.health + strength < 100:
+                    self.health += strength
+                    print("%s health was restored by %s points." % (self.name, strength))
+                else:
+                     self.health = 100
+                     print("health fully restored")
+            elif effect == "satiate":
+                print("you feel less full after eating the %s" % item.name)
+                if self.hunger + strength < 100:
+                    self.hunger += strength
+                else:
+                    self.hunger = 100
+                    print("you are stuffed")
         if item.amount > 1:
             item.amount -= 1
         else:

@@ -23,5 +23,6 @@ class Armor(Item):
 
     types = list(armorBank.keys())
 
+    maxFindableStack = 1
 
     equippable = True

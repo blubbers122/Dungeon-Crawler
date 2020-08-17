@@ -2,8 +2,8 @@ from random import randint
 
 class Item:
     def __init__(self, name=None, amount=None):
+        self.usable = False
         if not name:
-            print('not name')
             self.name = self.chooseItem()
             self.amount = self.chooseAmount()
         else:
@@ -11,11 +11,10 @@ class Item:
             self.amount = amount
 
     def chooseItem(self):
-        print("i chose " + self.types[randint(0, len(self.types) - 1)])
         return self.types[randint(0, len(self.types) - 1)]
 
     def chooseAmount(self):
-        return randint(1, 3)
+        return 1 if self.maxFindableStack == 1 else randint(1, self.maxFindableStack)
 
     def addToInventory(self):
         print(self.name + " was added to your inventory")

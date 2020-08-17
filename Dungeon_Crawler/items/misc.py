@@ -1,8 +1,9 @@
 from ..items import Item
 
 miscBank = {
-    "misc1": {
-        "value": 5
+    "torch": {
+        "value": 5,
+        "description": "this will be very useful if I find a way to light it."
     }
 }
 
@@ -15,6 +16,6 @@ class Misc(Item):
 
     types = list(miscBank.keys())
 
-
+    maxFindableStack = 3
 
     equippable = False

@@ -9,9 +9,19 @@ class Combat:
 
     def start(self, player, enemy):
         printCentered("FIGHT", "#")
-        if player.speed > enemy.speed:
+        sleep(1)
+        print(enemy.name + " approaches")
+
+        # player goes first if you are faster and saw the enemy before the fight
+        if player.speed > enemy.speed and enemy.detected:
+            print("you rush into battle")
             count = 0
+        # enemy goes first
         else:
+            if enemy.detected:
+                print("%s was too fast!" % enemy.name)
+            else:
+                print("%s snuck up on me!" % enemy.name)
             count = 1
         while True:
             if count % 2 == 0:

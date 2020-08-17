@@ -1,7 +1,9 @@
 from ..display import printMenu, printCentered, printLine
 import pyinputplus as pyip
+from time import sleep
 
 def showPlayerInventory(player):
+    # the indices corresponding to the items that can be chosen in inventory
     validChoices = [str(x) for x in range(1, len(player.inventory) + 1)]
     validChoices.append("b")
 
@@ -20,6 +22,11 @@ def showPlayerInventory(player):
             choice = pyip.inputChoice(["e", "b"], prompt=">")
             if choice == "e":
                 player.equip(item)
+        elif item.usable:
+            printCentered("*press 'e' to use or 'b' to return*")
+            choice = pyip.inputChoice(["e", "b"], prompt=">")
+            if choice == "e":
+                player.consumeItem(item)
         else:
             printCentered("*press 'b' to return*")
             choice = pyip.inputChoice(["e", "b"], prompt=">")
@@ -33,6 +40,7 @@ def showControls(player):
 def showPlayerStatus(player):
     printMenu(player.status(), topText=player.name)
     printMenu(player.equipment(), topText="Equipped", bottom=True)
+    sleep(1)
 
 # TODO: a few numbers inputs to choose options when encountering a random event
 

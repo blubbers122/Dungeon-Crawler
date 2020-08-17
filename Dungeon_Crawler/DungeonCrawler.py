@@ -8,6 +8,7 @@ from .enemies.classes import Bat
 from .display import *
 from .combat import Combat
 from .rooms import Room
+from .floors import Floor
 
 # TODO: display combat menu if you press 'm?' on turn to heal and use special items
 # TODO: make it harder to run away if you are slower
@@ -18,6 +19,20 @@ def turnGenerator():
     roll = randint(0, len(eventBank) - 1)
     return eventBank[roll]
 
+# calculates if player found loot, implements it, and returns True if they did
+def handleFindLoot(room, player):
+    for container in room.containers:
+        #TODO: optimize to factor in player and container location too
+        foundChest = player.perception + randint(-2, 2) + container.visibility >= 10
+
+        if foundChest:
+            print(container.discoveryMessage)
+            print("loot?")
+            if pyip.inputYesNo(">") == "yes":
+                player.loot(container)
+                room.containers.remove(container)
+            return True
+    return False
 
 # TODO: add special event related functions to call if you roll for them in turnGenerator
 def gamePlayLoop(player):
@@ -26,37 +41,44 @@ def gamePlayLoop(player):
     print()
     printCentered("****To display in game commands press 'c'****")
 
+    floor = Floor()
+
     # builds the starting room
     room = Room()
     room.current = True
     room.generateContainers()
-    print(room.containers)
+    room.generateEnemies()
+    #print(room.containers)
+    #print(room.enemies)
 
     while playing:
         printCentered("Turn %s" % turn, "~")
-        for container in room.containers:
-            #TODO: optimize to factor in player and container location too
-            foundChest = player.perception + randint(-2, 2) + container.visibility >= 10
 
-            if foundChest:
-                print(container.discoveryMessage)
-                print("loot?")
-                if pyip.inputYesNo(">") == "yes":
-                    player.loot(container)
-                    room.containers.remove(container)
-                break
+        handleFindLoot(room, player)
+
 
         eventRoll = randint(0, 100)
         if eventRoll > 80:
             event = turnGenerator()
             #print(event)
-        if turn % 2 == 0:
-            enemy = Bat()  # temporary to test combat
-            print(enemy.name + " approaches")
-            Combat(player, enemy)
+
+        # checks if an enemy is in the same spot as the player
+        for enemy in room.enemies:
+            if player.roomLocation == enemy.roomLocation:
+                # check if player noticed the enemy
+                if player.perception > enemy.stealth:
+                    enemy.detected = True
+
+                Combat(player, enemy)
+                room.enemies.remove(enemy)
+                room.enemyCount -= 1
         while True:
+            printCentered(floor.name, "=")
+            printCentered("Location %s" % player.roomLocation)
+            print(room)
             nextMove = pyip.inputMenu(["c", "i", "e", "q", "s", "f", "l", "r"], ">")
             if nextMove == "e":
+                player.roomLocation += 1
                 break
             player.moveSet[nextMove](player)  # calls control function associated with command
 

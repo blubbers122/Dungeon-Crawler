@@ -3,7 +3,8 @@ from random import randint
 from ..items import treasure
 
 class Skeleton(Enemy):
-    def __init__(self):
+    def __init__(self, roomLocation):
+        super().__init__(roomLocation)
         self.health = 3 + randint(-2, 2)
         self.inventory = [treasure.Treasure("gold coin", 5 + randint(-4, 4))]
 
@@ -14,7 +15,8 @@ class Skeleton(Enemy):
 
 
 class Bat(Enemy):
-    def __init__(self):
+    def __init__(self, roomLocation):
+        super().__init__(roomLocation)
         self.health = 3 + randint(-2, 2)
         self.inventory = [treasure.Treasure("gold coin", 5 + randint(-4, 4))]
     # TODO: make noise

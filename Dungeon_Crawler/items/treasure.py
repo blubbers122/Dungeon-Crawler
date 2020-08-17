@@ -21,4 +21,6 @@ class Treasure(Item):
 
     types = list(treasureBank.keys())
 
+    maxFindableStack = 10
+
     equippable = False

@@ -26,4 +26,6 @@ class Weapon(Item):
 
     types = list(weaponBank.keys())
 
+    maxFindableStack = 1
+
     equippable = True

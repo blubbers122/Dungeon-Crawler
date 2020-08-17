@@ -21,8 +21,10 @@ class Consumable(Item):
         self.effects = consumableBank[self.name]["effects"]
         self.value = consumableBank[self.name]["value"]
         self.description = consumableBank[self.name]["description"]
+        self.usable = True
 
     types = list(consumableBank.keys())
 
+    maxFindableStack = 3
 
     equippable = False
