@@ -13,6 +13,7 @@ class Misc(Item):
     def __init__(self, name=None, amount=None):
         super().__init__(name, amount)
         self.value = miscBank[self.name]["value"]
+        self.description = miscBank[self.name]["description"]
 
     types = list(miscBank.keys())
 

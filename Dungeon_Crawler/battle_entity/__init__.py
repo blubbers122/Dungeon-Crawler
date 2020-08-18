@@ -4,8 +4,10 @@ from random import randint
 class Entity:
 
     #add attack type later
-    def attack(self, opponent):
+    def attack(self, opponent, crit=False):
         rawDamage = self.strength * self.damageMult - opponent.defense + randint(-2, 2)
+        if crit:
+            rawDamage *= 2
         if rawDamage <= 0:
             rawDamage = 1
         opponent.health -= rawDamage

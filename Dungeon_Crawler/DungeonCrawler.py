@@ -34,6 +34,42 @@ def handleFindLoot(room, player):
             return True
     return False
 
+def handleNearbyEnemies(room, player):
+    # checks if an enemy is in the same spot as the player
+    for enemy in room.enemies:
+        if player.roomLocation == enemy.roomLocation:
+            print(enemy.stealth)
+            # check if player noticed the enemy
+            if player.perception + randint(-2, 2) > enemy.stealth:
+                enemy.detected = True
+                print("you notice a %s nearby." % enemy.name)
+            # if enemy noticed the player
+            if player.stealth + randint(-2, 2) < enemy.perception:
+                player.detected = True
+            else:
+                if enemy.detected: print("it didn't see you")
+                player.detected = False
+
+            # can choose if you want to fight the nearby enemy you see
+            if enemy.detected:
+                print("attack the %s?" % enemy.name)
+                if pyip.inputYesNo(">") == "yes":
+                    Combat(player, enemy)
+                    room.enemies.remove(enemy)
+                    room.enemyCount -= 1
+                    return
+                print("you decide to try and leave it alone.")
+            # if the enemy sees you and you don't see it,
+            # it may sneak attack you
+            if player.detected:
+                if randint(0, 10) < enemy.aggression:
+                    Combat(player, enemy)
+                    room.enemies.remove(enemy)
+                    room.enemyCount -= 1
+
+def nextRoom():
+    pass
+
 # TODO: add special event related functions to call if you roll for them in turnGenerator
 def gamePlayLoop(player):
     playing = True
@@ -51,27 +87,25 @@ def gamePlayLoop(player):
     #print(room.containers)
     #print(room.enemies)
 
+    printCentered(floor.name, "=")
+    printCentered("Location %s" % player.roomLocation)
+    print(room)
+
     while playing:
+        if player.roomLocation >= room.size:
+            nextRoom()
         printCentered("Turn %s" % turn, "~")
-
-        handleFindLoot(room, player)
-
 
         eventRoll = randint(0, 100)
         if eventRoll > 80:
             event = turnGenerator()
             #print(event)
 
-        # checks if an enemy is in the same spot as the player
-        for enemy in room.enemies:
-            if player.roomLocation == enemy.roomLocation:
-                # check if player noticed the enemy
-                if player.perception > enemy.stealth:
-                    enemy.detected = True
+        handleNearbyEnemies(room, player)
 
-                Combat(player, enemy)
-                room.enemies.remove(enemy)
-                room.enemyCount -= 1
+        handleFindLoot(room, player)
+
+        # interface for waiting for player's next actions before ending turn
         while True:
             printCentered(floor.name, "=")
             printCentered("Location %s" % player.roomLocation)

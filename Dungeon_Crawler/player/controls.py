@@ -50,9 +50,7 @@ def runAway(player):
 
 # TODO: f for engage in fight after spotting enemy
 def fight(player):
-    # enemySpotted and enemyExists
-    print("You approach enemy " + enemies[0].name)
-    combat(player, enemies[0])
+    pass
 
 def quitGame(player):
     if pyip.inputYesNo(">Would you like to save and quit game? ") == "yes":
@@ -61,7 +59,7 @@ def quitGame(player):
         printLine("-")
 
 # TODO: l for look around that describes current room closely but uses turn and makes you vulnerable
-def lookAround(consoleWidth, player):
+def lookAround(player):
     pass
 
 def endTurn():

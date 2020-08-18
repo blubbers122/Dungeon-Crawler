@@ -17,5 +17,5 @@ def chooseFromProbability(optionWeights):
 
     # checks each option if it won the roll
     for type in itemTypes:
-        if roll < adjustedWeights[type]:
+        if roll <= adjustedWeights[type]:
             return type

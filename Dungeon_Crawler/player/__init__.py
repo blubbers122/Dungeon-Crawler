@@ -15,7 +15,9 @@ class Player(Entity):
         self.health = 100
         self.hunger = 100
         self.roomLocation = 0
-        self.perception = 5 # higher means player can see further and better up close
+        self.perception = 8 # higher means player can see further and better up close
+        self.stealth = 8
+        self.detected = False # True if an enemy sees you
         self.equipped = {
             "weapon": None,
             "armor": None
