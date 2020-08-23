@@ -44,5 +44,17 @@ class Slime(Enemy):
 
     damageType = "poison"
 
+class Troll(Enemy):
+    def __init__(self, roomLocation):
+        super().__init__(roomLocation)
+        self.health = 30 + randint(-2, 2)
+        self.inventory = [treasure.Treasure("gold coin", 5 + randint(-4, 4))]
+
+    name = "troll"
+
+    strength = 9
+    speed = 1
+    aggression = 6
+
 class Boss(Enemy):
     pass

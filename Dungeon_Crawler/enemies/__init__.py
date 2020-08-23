@@ -4,7 +4,8 @@ class Enemy(Entity):
     def __init__(self, roomLocation):
         self.roomLocation = roomLocation
         self.detected = False
-        self.perception = 5
+
+    perception = 5
 
     def __repr__(self):
         return "%s at location %s." % (self.name, self.roomLocation)
@@ -14,3 +15,5 @@ class Enemy(Entity):
     damageMult = 1
 
     defense = 0
+
+    conservativity = 5 # will have an effect on how recklessly they fight

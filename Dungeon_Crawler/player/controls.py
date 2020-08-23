@@ -4,10 +4,10 @@ from time import sleep
 
 def showPlayerInventory(player):
     # the indices corresponding to the items that can be chosen in inventory
-    validChoices = [str(x) for x in range(1, len(player.inventory) + 1)]
-    validChoices.append("b")
 
     while True:
+        validChoices = [str(x) for x in range(1, len(player.inventory) + 1)]
+        validChoices.append("b")
         inventory = player.inventoryStrings()
         printMenu(inventory, topText="Inventory")
         printCentered("*enter the number to inspect or press 'b' to return*")
@@ -18,22 +18,28 @@ def showPlayerInventory(player):
         item = player.inventory[int(choice) - 1]
         printMenu(item.itemStrings(), topText=item.name)
         if item.equippable:
-            printCentered("*press 'e' to equip or 'b' to return*")
-            choice = pyip.inputChoice(["e", "b"], prompt=">")
+            printCentered("*press 'e' to equip, 'd' to drop, or 'b' to return*")
+            choice = pyip.inputChoice(["e", "d", "b"], prompt=">")
             if choice == "e":
                 player.equip(item)
+            elif choice == "d":
+                player.dropItem(item)
         elif item.usable:
-            printCentered("*press 'e' to use or 'b' to return*")
-            choice = pyip.inputChoice(["e", "b"], prompt=">")
+            printCentered("*press 'e' to use, 'd' to drop, or 'b' to return*")
+            choice = pyip.inputChoice(["e", "d", "b"], prompt=">")
             if choice == "e":
                 player.consumeItem(item)
+            elif choice == "d":
+                player.dropItem(item)
         else:
-            printCentered("*press 'b' to return*")
-            choice = pyip.inputChoice(["e", "b"], prompt=">")
+            printCentered("*press 'd' to drop or 'b' to return*")
+            choice = pyip.inputChoice(["e","d", "b"], prompt=">")
+            if choice == "d":
+                player.dropItem(item)
 
 
 def showControls(player):
-    printMenu(["i: display inventory", "c: display in-game commands", "s: see character status", "e: end current turn", "q: save and quit"],
+    printMenu(["i: display inventory", "c: display in-game commands", "s: see character status", "e: end current turn", "m: view map", "l: look around", "q: save and quit"],
         topText="In-Game Controls",
         bottom=True)
 
@@ -54,6 +60,7 @@ def fight(player):
 
 def quitGame(player):
     if pyip.inputYesNo(">Would you like to save and quit game? ") == "yes":
+        print("Thanks for playing!")
         exit()
     else:
         printLine("-")
@@ -64,3 +71,6 @@ def lookAround(player):
 
 def endTurn():
     pass
+
+def map(player):
+    print(player.currentRoom)

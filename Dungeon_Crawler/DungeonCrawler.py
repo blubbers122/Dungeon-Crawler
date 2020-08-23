@@ -63,11 +63,22 @@ def handleNearbyEnemies(room, player):
             # it may sneak attack you
             if player.detected:
                 if randint(0, 10) < enemy.aggression:
+                    print("but %s saw you and attacks" % enemy.name)
                     Combat(player, enemy)
                     room.enemies.remove(enemy)
                     room.enemyCount -= 1
 
-def nextRoom():
+def nextRoom(player, floor):
+    room = Room()
+    player.currentRoom = room
+    player.roomLocation = 0
+    floor.currentRoom = room
+    room.generateContainers(floor)
+    room.generateEnemies(floor)
+    return room
+
+# tells important player status information
+def playerUpdate():
     pass
 
 # TODO: add special event related functions to call if you roll for them in turnGenerator
@@ -80,20 +91,16 @@ def gamePlayLoop(player):
     floor = Floor()
 
     # builds the starting room
-    room = Room()
-    room.current = True
-    room.generateContainers()
-    room.generateEnemies()
-    #print(room.containers)
-    #print(room.enemies)
+    room = nextRoom(player, floor)
 
     printCentered(floor.name, "=")
-    printCentered("Location %s" % player.roomLocation)
-    print(room)
 
     while playing:
         if player.roomLocation >= room.size:
-            nextRoom()
+            print("you leave %s" % room.name)
+            room = nextRoom(player, floor)
+            print("you entered %s" % room.name)
+            print(room.entranceMessage)
         printCentered("Turn %s" % turn, "~")
 
         eventRoll = randint(0, 100)
@@ -105,18 +112,28 @@ def gamePlayLoop(player):
 
         handleFindLoot(room, player)
 
+        if player.hunger < 0:
+            print("you are starving.")
+            player.health -= 1
+        elif player.hunger < 30:
+            print("you should definitely find something to eat")
+        elif player.hunger < 60:
+            print("you're starting to get a little peckish")
+
         # interface for waiting for player's next actions before ending turn
         while True:
             printCentered(floor.name, "=")
-            printCentered("Location %s" % player.roomLocation)
-            print(room)
-            nextMove = pyip.inputMenu(["c", "i", "e", "q", "s", "f", "l", "r"], ">")
+            printCentered("Location %s/%s" % (player.roomLocation, room.size))
+            nextMove = pyip.inputMenu(["c", "i", "e", "q", "s", "f", "l", "r", "m"], ">")
             if nextMove == "e":
                 player.roomLocation += 1
                 break
             player.moveSet[nextMove](player)  # calls control function associated with command
 
-        player.hunger -= 1
+        if player.hunger > 0:
+            player.hunger -= 10
+
+
         turn += 1
 
 

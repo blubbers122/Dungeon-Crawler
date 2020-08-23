@@ -4,7 +4,7 @@ miscBank = {
     "torch": {
         "value": 5,
         "description": "this will be very useful if I find a way to light it."
-    }
+    } # increase perception but decrease stealth
 }
 
 

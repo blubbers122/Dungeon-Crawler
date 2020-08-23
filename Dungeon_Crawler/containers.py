@@ -64,7 +64,9 @@ class Container(Entity):
         for i in range(self.itemCount):
             type = chooseFromProbability(self.itemClassWeights)
             item = itemClasses[type]()
-            self.inventory.append(item)
+            # won't append duplicate items to container
+            if item.name not in [x.name for x in self.inventory]:
+                self.inventory.append(item)
 
     def __repr__(self):
          aboutContainer = "%s with %s items with a visibility of %s and a rarity of %s\n" % (self.name, self.itemCount, self.visibility, self.rarity)

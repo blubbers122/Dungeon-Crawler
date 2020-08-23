@@ -15,8 +15,7 @@ class Player(Entity):
         self.health = 100
         self.hunger = 100
         self.roomLocation = 0
-        self.perception = 8 # higher means player can see further and better up close
-        self.stealth = 8
+        self.currentRoom = None
         self.detected = False # True if an enemy sees you
         self.equipped = {
             "weapon": None,
@@ -31,7 +30,8 @@ class Player(Entity):
         "f": fight,
         "q": quitGame,
         "l": lookAround,
-        "e": endTurn
+        "e": endTurn,
+        "m": map
         }
 
     def addToInventory(self, itemToAdd):
@@ -39,39 +39,49 @@ class Player(Entity):
         for item in self.inventory:
             if item.name == itemToAdd.name:
                 item.amount += itemToAdd.amount
-                print("%s added to inventory." % itemToAdd.name)
+                print("%s added to inventory." % itemToAdd)
                 return
 
         # adds new stack to inv
         self.inventory.append(itemToAdd)
-        print("%s added to inventory." % itemToAdd.name)
+        print("%s added to inventory." % itemToAdd)
 
     def equip(self, item):
+        # removes the item from inventory if the stack has only
+        # one of the item, otherwise it decrements the stack
         if item in self.inventory:
-            self.inventory.remove(item)
+            if item.amount == 1:
+                self.inventory.remove(item)
+            else:
+                item.amount -= 1
         if item.__class__.__name__ == "Armor":
             oldArmor = self.equipped["armor"]
             if oldArmor:
                 self.addToInventory(oldArmor)
+                print("you replaced your %s you had equipped with the %s" % (oldArmor.name, item.name))
             self.equipped["armor"] = item
             self.defense = item.resistance
         else:
             oldWeapon = self.equipped["weapon"]
             if oldWeapon:
                 self.addToInventory(oldWeapon)
+                print("you replaced your %s you had equipped with the %s" % (oldWeapon.name, item.name))
             self.equipped["weapon"] = item
             self.damageMult = item.damageMult
 
     def unequip(self, toolType):
         pass
 
+    def dropItem(self, item):
+        self.inventory.remove(item)
+        print("you dropped the %s" % item)
+
     def consumeItem(self, item):
-        # dict of item effect functions?
         for effect, strength in item.effects.items():
             if effect == "health restore":
                 if self.health + strength < 100:
                     self.health += strength
-                    print("%s health was restored by %s points." % (self.name, strength))
+                    print("%s's health was restored by %s points." % (self.name, strength))
                 else:
                      self.health = 100
                      print("health fully restored")
@@ -91,25 +101,35 @@ class Player(Entity):
         while True:
             inventoryMenu = container.inventoryStrings()
             validChoices = [str(x) for x in range(1, len(container.inventory) + 1)]
-            validChoices.append("b")
+            validChoices.extend(["b", "a"])
 
             printMenu(inventoryMenu, topText=container.name)
-            if len(validChoices) == 1:
+            # if everything has been looted, exit
+            if len(validChoices) == 2:
                 break
-            printCentered("*enter the number to take item or press 'b' to return*")
+            printCentered("*enter the number to take item, press 'a' to loot all, or 'b' to return*")
             choice = inputChoice(validChoices, prompt=">")
+            # exit loot menu option
             if choice == "b":
                 break
+            # loot all
+            elif choice == "a":
+                for item in container.inventory:
+                    self.addToInventory(item)
+                break
+            # loot one item
+            else:
+                item = container.inventory[int(choice) - 1]
+                self.addToInventory(item)
+                container.inventory.remove(item)
 
-            item = container.inventory[int(choice) - 1]
-            self.addToInventory(item)
-            container.inventory.remove(item)
-
+    # returns text describing player's equipment
     def equipment(self):
         weapon = self.equipped["weapon"]
         armor = self.equipped["armor"]
         return "Weapon: %s" % (weapon.name if weapon else "none"), "Armor: %s" % (armor.name if armor else "none")
 
+    # returns multiple text lines describing the player's current status
     def status(self):
         attributes = ["Health: %s" % self.health,
         "Strength: %s" % self.strength,

@@ -1,13 +1,15 @@
 from .containers import Container
 from random import randint
-from .enemies.classes import Bat
+from .util import chooseFromProbability
 
-roomTypes = {}
+roomTypes = ["the room", "an abandoned camp", "a dark cellar", "a cell"]
+
 
 class Room:
     def __init__(self):
-        self.name = "the room"
-        self.size = 5
+        self.name = roomTypes[randint(0, len(roomTypes) - 1)]
+        self.size = randint(2, 5)
+        self.entranceMessage = "" # what will be printed when you enter the room
         self.danger = 5
         self.fortune = 5
         self.neighborCount = randint(1, 3)
@@ -18,22 +20,24 @@ class Room:
         self.enemies = []
         self.current = False
 
-    def generateContainers(self):
+    def generateContainers(self, floor):
         for i in range(self.containerCount):
             container = Container()
             self.containers.append(container)
 
-    def generateEnemies(self):
+    def generateEnemies(self, floor):
         filled = []
         for i in range(self.enemyCount):
-            #TODO: randomize enemy type to an extent
-
-            
             location = randint(0, self.size)
             if location in filled: return
 
-            enemy = Bat(location)
+            # picks enemy type from probablities
+            enemyType = chooseFromProbability(floor.enemyWeights)
+
+            # creates the enemy at current location
+            enemy = floor.enemiesAllowed[enemyType](location)
             self.enemies.append(enemy)
+
             filled.append(location)
 
     def generateNeighbors(self):
