@@ -5,12 +5,15 @@ armorBank = {
     #          "resistance": 0},
     "leather armor": {"value": 26,
                       "resistance": 2,
+                      "rarity": 1,
                       "description": "A worn set of leather."},
     "chainmail armor": {"value": 36,
                         "resistance": 3,
+                        "rarity": 1,
                         "description": "Chainy."},
     "dark cloak": {"value": 18,
                    "resistance": 1,
+                   "rarity": 1,
                    "description": "I won't need extra protection if they can't see me!"},
 }
 

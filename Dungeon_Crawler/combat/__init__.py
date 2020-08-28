@@ -3,6 +3,9 @@ from random import randint
 from time import sleep
 import pyinputplus as pyip
 
+
+# TODO: display combat menu if you press 'm?' on turn to heal and use special items
+
 class Combat:
     def __init__(self, player, enemy):
         self.turn = 1

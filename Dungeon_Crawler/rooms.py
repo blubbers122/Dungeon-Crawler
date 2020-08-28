@@ -22,7 +22,8 @@ class Room:
 
     def generateContainers(self, floor):
         for i in range(self.containerCount):
-            container = Container()
+            location = randint(0, self.size)
+            container = Container(location)
             self.containers.append(container)
 
     def generateEnemies(self, floor):

@@ -4,15 +4,10 @@ from textwrap import wrap
 from random import randint
 from .events import eventBank
 from .settings import difficulty
-from .enemies.classes import Bat
 from .display import *
 from .combat import Combat
 from .rooms import Room
 from .floors import Floor
-
-# TODO: display combat menu if you press 'm?' on turn to heal and use special items
-# TODO: make it harder to run away if you are slower
-
 
 # TODO: decide if spawn enemy, if they spot you or you spot them
 def turnGenerator():
@@ -22,10 +17,10 @@ def turnGenerator():
 # calculates if player found loot, implements it, and returns True if they did
 def handleFindLoot(room, player):
     for container in room.containers:
-        #TODO: optimize to factor in player and container location too
+        closeToChest = player.roomLocation == container.roomLocation
         foundChest = player.perception + randint(-2, 2) + container.visibility >= 10
-
-        if foundChest:
+        print(closeToChest, foundChest)
+        if closeToChest and foundChest:
             print(container.discoveryMessage)
             print("loot?")
             if pyip.inputYesNo(">") == "yes":
@@ -96,6 +91,7 @@ def gamePlayLoop(player):
     printCentered(floor.name, "=")
 
     while playing:
+        print(player.roomLocation)
         if player.roomLocation >= room.size:
             print("you leave %s" % room.name)
             room = nextRoom(player, floor)
@@ -125,10 +121,9 @@ def gamePlayLoop(player):
             printCentered(floor.name, "=")
             printCentered("Location %s/%s" % (player.roomLocation, room.size))
             nextMove = pyip.inputMenu(["c", "i", "e", "q", "s", "f", "l", "r", "m"], ">")
-            if nextMove == "e":
-                player.roomLocation += 1
-                break
             player.moveSet[nextMove](player)  # calls control function associated with command
+            if nextMove == "e" or nextMove == "l":
+                break
 
         if player.hunger > 0:
             player.hunger -= 10

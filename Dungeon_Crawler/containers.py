@@ -48,7 +48,7 @@ itemClasses = {
 itemTypes = list(itemClasses.keys())
 
 class Container(Entity):
-    def __init__(self):
+    def __init__(self, roomLocation):
         self.name = containerTypes[randint(0, len(containerTypes) - 1)]
         self.itemCount = randint(1, containerBank[self.name]["max items"])
         self.rarity = containerBank[self.name]["rarity"]
@@ -56,6 +56,7 @@ class Container(Entity):
         self.itemClassWeights = containerBank[self.name]["item class weights"]
         self.fillInventory()
         self.visibility = randint(1, 10)
+        self.roomLocation = roomLocation
 
 
         self.discoveryMessage = "You found a %s!" % self.name
