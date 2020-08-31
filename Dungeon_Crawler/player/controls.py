@@ -68,10 +68,12 @@ def quitGame(player):
 # TODO: l for look around that describes current room closely but uses turn and makes you vulnerable
 def lookAround(player):
     print("%s looks around." % player.name)
+    player.currentPerception += 1
 
 def endTurn(player):
     print("%s continues through %s." % (player.name, player.currentRoom.name))
     player.roomLocation += 1
+    player.currentPerception = player.perception
 
 def map(player):
     print(player.currentRoom)

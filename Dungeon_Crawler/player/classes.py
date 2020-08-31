@@ -8,6 +8,7 @@ class Warrior(Player):
         self.equip(armor.Armor("chainmail armor", 1))
         self.stealth = 2
         self.perception = 3
+        self.currentPerception = 3
 
     className = "Warrior"
 
@@ -18,8 +19,9 @@ class Ranger(Player):
         self.equip(armor.Armor("leather armor", 1))
         self.stealth = 4
         self.perception = 6
+        self.currentPerception = 6
 
-    className = "ranger"
+    className = "Ranger"
 
 # give much better luck than the others
 class Rogue(Player):
@@ -29,7 +31,8 @@ class Rogue(Player):
         self.equip(armor.Armor("dark cloak", 1))
         self.stealth = 6
         self.perception = 5
-        
+        self.currentPerception = 5
+
     className = "Rogue"
 
 class Deprived(Player):
